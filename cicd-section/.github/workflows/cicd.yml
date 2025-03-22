@@ -1,0 +1,19 @@
+name: Hello GitHub Actions
+on: push
+
+jobs:
+  hello-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say hello
+        run: |
+          echo "hello"
+          echo "github actions"
+
+  goodbye-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say goodbye
+        run: |
+          echo "goodbye"
+          echo "github actions"
