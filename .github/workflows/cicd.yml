@@ -1,5 +1,5 @@
 name: hello github
-on:push
+on: push
 
 jobs:
   hello-job:
