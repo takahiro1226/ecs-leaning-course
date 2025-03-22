@@ -1,20 +1,14 @@
-name: Hello GitHub Actions
-on: 
-  push:
+name: hello github
+on:push
 
 jobs:
   hello-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Say hello
-        run: |
-          echo "hello"
-          echo "github actions"
-
+      - run: echo "hello world"
+      - run: echo "hello world 2"
   goodbye-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Say goodbye
-        run: |
-          echo "goodbye"
-          echo "github actions"
+      - run: echo "bye world"
+      - run: echo "bye world 2"
