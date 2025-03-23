@@ -6,7 +6,7 @@ on:
       - 'cicd-section/api/**'
 
 env:
-  AWS_REGION: us-west-1
+  AWS_REGION: us-west-2
   ECS_CLUSTER: my-app-cluster
   ECS_SERVICE: my-app-api-service
   ECR_REPOSITORY: my-app-api
