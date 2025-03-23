@@ -1,17 +1,49 @@
-name: Hello GitHub Actions
-on: push
+name: Web Api Deploy Pipeline
+on: 
+  push:
+    paths:
+      - '.github/workflows/**'
+      - 'cicd-section/api/**'
+
+env:
+  AWS_REGION: us-east-1
+  ECS_CLUSTER: my-app-cluster
+  ECS_SERVICE: my-app-api-service
+  ECR_REPOSITORY: my-app-api
+  ECS_TASK_DEFINITION: cdcd-section/api/task-definition.json
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
-  hello-job:
+# test
+# build
+  test-and-build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cicd-section/api
     steps:
-      - name: Say hello
+      - uses: actions/checkout@v4
+      - name: Run Test and Build an Image
+        run: docker image build -t temp_api_image:latest .
+
+      - name: Configure AWS CredentialsAWS_ROLE_TO_ASSUME}}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push Docker Image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          echo "hello"
-          echo "github actions"
-  goodbye-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Say goodbye
-        run: |
-          echo "goodbye"
-          echo "github actions"
+            docker tag temp_api_image:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+            docker image push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+
+# deploy
